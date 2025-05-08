@@ -12,7 +12,7 @@ Dado que este proyecto es un proyecto abierto, debe completar las siguientes tar
 
 Cree el diagrama de clases UML para tener una vista previa clara de cómo se estructurará la aplicación.
 Presenta la idea del proyecto junto con el Diagrama de Clases UML creado anteriormente a tu personal docente para que sea aprobado antes de seguir adelante.
-![Diagrama UML proyecto.JPG](ProyectoFutbol/UML/Diagrama%20UML%20proyecto.JPG)
+![Diagrama UML proyecto.JPG](ProyectoFutbol/Diagrama%20UML%20proyecto.JPG)
 
 ## **Requisitos técnicos**
 
