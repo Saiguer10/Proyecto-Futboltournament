@@ -2,6 +2,7 @@ package com.example.demo.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import com.example.demo.enums.Role;
 
 @Inheritance(strategy = InheritanceType.JOINED)
 @Entity
