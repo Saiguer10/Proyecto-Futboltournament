@@ -1,49 +1,61 @@
-package com.example.demo.auth;
+package com.example.demo.controllers;
 
+import com.example.demo.dtos.AuthResponse;
+import com.example.demo.dtos.LoginRequest;
+import com.example.demo.dtos.RegisterRequest;
+import com.example.demo.controllers.AuthController;
 import com.example.demo.enums.Role;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.demo.services.AuthenticationService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.*;
+import org.springframework.http.ResponseEntity;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@WebMvcTest(AuthController.class)
-public class AuthControllerTest {
+class AuthControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @InjectMocks
+    private AuthController authController;
 
-    @MockBean
-    private AuthService authService;
+    @Mock
+    private AuthenticationService authenticationService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
-    void testRegisterPlayerReturnsToken() throws Exception {
-        RegisterRequest request = RegisterRequest.builder()
-                .username("testuser")
-                .email("test@example.com")
-                .password("test1234")
-                .role(Role.PLAYER)
-                .build();
+    void testRegister() {
+        RegisterRequest request = new RegisterRequest();
+        request.setName("Carlos");
+        request.setEmail("carlos@test.com");
+        request.setUsername("carlos123");
+        request.setPassword("1234");
+        request.setRole(Role.PLAYER);  // Asegúrate de que Role esté disponible aquí
 
-        AuthResponse response = AuthResponse.builder()
-                .token("fake-jwt-token")
-                .build();
+        AuthResponse mockResponse = new AuthResponse("fake-jwt-token");
 
-        when(authService.register(request)).thenReturn(response);
+        when(authenticationService.register(request)).thenReturn(mockResponse);
 
-        mockMvc.perform(post("/api/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").value("fake-jwt-token"));
+        AuthResponse response = authController.register(request);
+
+        assertEquals("fake-jwt-token", response.getToken());
+        verify(authenticationService, times(1)).register(request);
+    }
+
+    @Test
+    public void testLogin() {
+        LoginRequest loginRequest = new LoginRequest("user@example.com", "password123");
+
+        ResponseEntity<AuthResponse> response = authController.login(loginRequest);
+
+        AuthResponse authResponse = response.getBody();
+
+        assertNotNull(authResponse);
+        assertEquals("Expected JWT", authResponse.getToken());
     }
 }
+

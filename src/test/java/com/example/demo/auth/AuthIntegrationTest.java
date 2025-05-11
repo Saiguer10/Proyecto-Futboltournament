@@ -1,15 +1,15 @@
-package com.example.demo.auth;
+package com.example.demo.integration;
 
+import com.example.demo.dtos.LoginRequest;
+import com.example.demo.dtos.RegisterRequest;
 import com.example.demo.enums.Role;
-import com.example.demo.repositories.UserRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -22,32 +22,33 @@ public class AuthIntegrationTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
-    @BeforeEach
-    void cleanDatabase() {
-        userRepository.deleteAll();
-    }
-
     @Test
-    void registerPlayer_andReturnsToken_andSavesUser() throws Exception {
-        RegisterRequest request = RegisterRequest.builder()
-                .username("integration_user")
-                .email("integration@example.com")
-                .password("1234")
-                .role(Role.PLAYER)
-                .build();
+    void testRegisterAndLoginFlow() throws Exception {
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setName("Carlos");
+        registerRequest.setEmail("carlos@example.com");
+        registerRequest.setUsername("carlos123");
+        registerRequest.setPassword("1234");
+        registerRequest.setRole(Role.PLAYER);
 
+        // Registro
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(registerRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").exists());
 
-        // Verifica que se haya guardado en base de datos
-        assert userRepository.findByEmail("integration@example.com").isPresent();
+        // Login
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("carlos@example.com");
+        loginRequest.setPassword("1234");
+
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").exists());
     }
 }

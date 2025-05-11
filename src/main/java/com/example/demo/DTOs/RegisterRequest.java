@@ -8,7 +8,8 @@ import lombok.Setter;
 @Setter
 public class RegisterRequest {
     private String name;
+    private String username; // requerido
     private String email;
     private String password;
-    private Role role; // PLAYER or ORGANIZER
+    private Role role;
 }

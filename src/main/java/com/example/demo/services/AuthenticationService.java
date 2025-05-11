@@ -8,7 +8,6 @@ import com.example.demo.models.Organizer;
 import com.example.demo.models.Player;
 import com.example.demo.models.User;
 import com.example.demo.repositories.UserRepository;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,20 +27,30 @@ public class AuthenticationService {
         User user;
 
         if (request.getRole() == Role.PLAYER) {
-            user = new Player();
+            Player player = new Player();
+            player.setName(request.getName());
+            player.setUsername(request.getUsername());
+            player.setEmail(request.getEmail());
+            player.setPassword(passwordEncoder.encode(request.getPassword()));
+            player.setRole(request.getRole());
+            player.setGoals(0);
+            player.setTeam(null);
+            player.setMatches(null);
+            user = player;
         } else {
-            user = new Organizer();
+            Organizer organizer = new Organizer();
+            organizer.setName(request.getName());
+            organizer.setUsername(request.getUsername());
+            organizer.setEmail(request.getEmail());
+            organizer.setPassword(passwordEncoder.encode(request.getPassword()));
+            organizer.setRole(request.getRole());
+            organizer.setOrganizationName("Default Organization");
+            user = organizer;
         }
 
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRole(request.getRole());
-
         userRepository.save(user);
-
         String token = jwtService.generateToken(user);
-        return new AuthResponse(token);
+        return new AuthResponse(token); // Devuelve el token
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -53,6 +62,6 @@ public class AuthenticationService {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         String token = jwtService.generateToken(user);
-        return new AuthResponse(token);
+        return new AuthResponse(token); // Devuelve el token
     }
 }
