@@ -1,66 +1,44 @@
 package com.example.demo.models;
 
-import com.example.demo.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-@Inheritance(strategy = InheritanceType.JOINED)
-@Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class User implements UserDetails {
+@Entity
+@Table(name = "users")
+@SuperBuilder
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Column(unique = true, nullable = false)
     private String username;
-    private String email;
+
+    @Column(nullable = false)
     private String password;
 
+    @Column(unique = true, nullable = false)
+    private String email;
+
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private UserRole role;
 
-    @Override
+
+
+    // Método requerido por Spring Security
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(role);
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 }

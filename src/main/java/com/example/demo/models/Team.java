@@ -12,13 +12,14 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Team {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Player> players;
 }
 

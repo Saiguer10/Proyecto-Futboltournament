@@ -2,27 +2,45 @@ package com.example.demo.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.beans.factory.config.YamlProcessor;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@Entity
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@Entity
+@Table(name = "matches")
 public class Match {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime date;
-    private String location;
+    @Column(nullable = false)
+    private String team1Name;
+
+    @Column(nullable = false)
+    private String team2Name;
+
+    @Column
+    private Integer team1Score;
+
+    @Column
+    private Integer team2Score;
+
+    @Column(nullable = false)
+    private LocalDateTime scheduledDate;
+
+
+    @Column
     private String result;
 
-    @ManyToOne
-    private Organizer organizer;
+
+    @Column
+    private Integer round;
 
     @ManyToMany
     @JoinTable(
@@ -32,4 +50,3 @@ public class Match {
     )
     private Set<Player> players;
 }
-

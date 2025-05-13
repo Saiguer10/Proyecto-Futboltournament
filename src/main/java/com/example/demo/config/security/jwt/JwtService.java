@@ -1,4 +1,4 @@
-package com.example.demo.services;
+package com.example.demo.config.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -14,7 +14,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "secret-key-demo";
+    private static final String SECRET_KEY = "superSecretKey";
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -27,6 +27,7 @@ public class JwtService {
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
@@ -45,3 +46,4 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration).before(new Date());
     }
 }
+
