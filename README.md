@@ -81,7 +81,7 @@ A continuacion se muestran los endpoints principales del proyecto:
 
 ## **Miembros del equipo**
 
-- [![Jose Manuel Siguero Perez](www.linkedin.com/in/jose-manuel-siguero)
+- [![LinkedIn](https://img.shields.io/badge/LinkedIn-blue?logo=linkedin)](https://www.linkedin.com/in/jose-manuel-siguero/)
 
 -----------------------------------------------------------------------------------
 
