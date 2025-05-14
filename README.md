@@ -19,7 +19,9 @@ tipos de usuarios,y se utiliza MySQL como base de datos principal.
 
 ## **Configuración**
 
-
+- Crear y clonar repositorio de GitHub (git clone)
+- Configurar las propiedades de la aplicación en Intellij
+- Conexión con BBDD MySQL con usuario y contraseña
 
 ## **Tecnologías utilizadas**
 A lo largo del proyecto, hemos requerido el uso de diversas tecnologías a destacar:
